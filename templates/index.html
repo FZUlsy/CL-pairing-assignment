@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Sudoku Generator</title>
+    <script>
+    function generateSudoku() {
+        const difficulty = document.getElementById('difficulty').value;
+        const count = document.getElementById('count').value;
+
+        fetch('/generate_sudoku', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ difficulty, count }),
+        })
+        .then(response => response.json())
+        .then(data => {
+            const container = document.getElementById('sudokuContainer');
+            container.innerHTML = '';
+            data.forEach((sudoku, index) => {
+                const sudokuElement = document.createElement('pre');
+                sudokuElement.textContent = `Sudoku ${index + 1}:\n${sudoku.map(row => row.join(' ')).join('\n')}`;
+                container.appendChild(sudokuElement);
+            });
+        });
+    }
+    </script>
+</head>
+<body>
+    <h1>Sudoku Generator</h1>
+
+    <label for="difficulty">Difficulty:</label>
+    <select id="difficulty">
+        <option>easy</option>
+        <option>medium</option>
+        <option>hard</option>
+        <option>expert</option>
+    </select>
+
+    <label for="count">Count:</label>
+    <input type="number" id="count" min="1" value="1">
+
+    <button onclick="generateSudoku()">Generate</button>
+
+    <div id="sudokuContainer"></div>
+</body>
+</html>
