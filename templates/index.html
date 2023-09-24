@@ -3,28 +3,47 @@
 <head>
     <title>Sudoku Generator</title>
     <script>
-    function generateSudoku() {
-        const difficulty = document.getElementById('difficulty').value;
-        const count = document.getElementById('count').value;
-
-        fetch('/generate_sudoku', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ difficulty, count }),
-        })
-        .then(response => response.json())
-        .then(data => {
-            const container = document.getElementById('sudokuContainer');
-            container.innerHTML = '';
-            data.forEach((sudoku, index) => {
-                const sudokuElement = document.createElement('pre');
-                sudokuElement.textContent = `Sudoku ${index + 1}:\n${sudoku.map(row => row.join(' ')).join('\n')}`;
-                container.appendChild(sudokuElement);
+        let answers = []; // 存储答案的全局变量
+    
+        function generateSudoku() {
+            const difficulty = document.getElementById('difficulty').value;
+            const count = document.getElementById('count').value;
+    
+            fetch('/generate_sudoku', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ difficulty, count }),
+            })
+            .then(response => response.json())
+            .then(data => {
+                const container = document.getElementById('sudokuContainer');
+                container.innerHTML = '';
+    
+                data.sudokus.forEach((sudoku, index) => {
+                    const sudokuElement = document.createElement('pre');
+                    sudokuElement.textContent = `Sudoku ${index + 1}:\n${sudoku.map(row => row.join(' ')).join('\n')}`;
+                    sudokuElement.className = 'shudu';
+                    container.appendChild(sudokuElement);
+                    
+                    const answer = data.answers[index];
+                    answers.push(answer); // 将答案存储到全局变量 answers 中
+                });
+            })
+            .catch(error => {
+                console.error('Error:', error);
             });
-        });
-    }
+        }
+        
+        function showanswer() {
+            const sudokuElements = document.getElementsByClassName('shudu');
+            const index = 0; // 假设只有一个数独元素，可以根据实际情况进行调整
+            const answer = answers[index];
+            
+            // 直接将答案替换到题目中
+            sudokuElements[index].textContent = `Answer ${index + 1}:\n${answer.map(row => row.join(' ')).join('\n')}`;
+        }
     </script>
 </head>
 <body>
@@ -42,6 +61,7 @@
     <input type="number" id="count" min="1" value="1">
 
     <button onclick="generateSudoku()">Generate</button>
+    <button onclick="showanswer()">Show Answer</button>
 
     <div id="sudokuContainer"></div>
 </body>

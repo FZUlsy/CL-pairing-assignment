@@ -15,7 +15,6 @@ app.debug = True
 def home():
     return render_template('index.html')
 
-# Flask路由，处理生成数独题目的请求
 @app.route('/generate_sudoku', methods=['POST'])
 def generate_sudoku():
     data = request.get_json()
@@ -26,10 +25,16 @@ def generate_sudoku():
     with ThreadPoolExecutor() as executor:
         results = [executor.submit(generate_sudoku_task, difficulty) for _ in range(count)]
 
-    sudokus = [result.result() for result in results]
-    return jsonify(sudokus)
+    sudokus = []
+    answers = []
 
-# 生成数独题目的函数
+    for result in results:
+        sudoku, answer = result.result()
+        sudokus.append(sudoku)
+        answers.append(answer)
+
+    return jsonify({'sudokus': sudokus, 'answers': answers})
+
 def generate_sudoku_task(difficulty):
     # 创建一个空的9x9数独网格
     grid = [[0 for _ in range(9)] for _ in range(9)]
@@ -57,12 +62,17 @@ def generate_sudoku_task(difficulty):
     else:
         remove_count = random.randint(30, 50)
 
+    # 创建一个空的9x9数独网格用于答案
+    answer = [[0 for _ in range(9)] for _ in range(9)]
+    for i in range(9):
+        for j in range(9):
+            answer[i][j] = grid[i][j]
     for _ in range(remove_count):
         row = random.randint(0, 8)
         col = random.randint(0, 8)
         grid[row][col] = 0
 
-    return grid
+    return grid, answer
 
 
 def solve_sudoku(grid):
