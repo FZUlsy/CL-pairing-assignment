@@ -7,33 +7,46 @@ from flask import jsonify
 import random
 from flask import Flask, render_template, request, jsonify
 from concurrent.futures import ThreadPoolExecutor
+import json
 
-app = Flask(__name__)
+app = Flask(__name__, template_folder='templates', static_folder='static')
 app.debug = True
 # Flask路由，渲染前端页面
 @app.route('/')
 def home():
-    return render_template('index.html')
+    return render_template('first.html')
 
-@app.route('/generate_sudoku', methods=['POST'])
-def generate_sudoku():
-    data = request.get_json()
-    difficulty = data.get('difficulty', 'easy')
-    count = data.get('count', 1)
-    count = int(count)
+@app.route('/choose')
+def choose():
+    return render_template('choosing.html')
 
-    with ThreadPoolExecutor() as executor:
-        results = [executor.submit(generate_sudoku_task, difficulty) for _ in range(count)]
+@app.route('/generate_easy_sudoku')
+def generate_easy_sudoku():
+    sudoku, answer = generate_sudoku_task("easy")
+    data = {
+        'sudoku': sudoku,
+        'answer': answer
+    }
+    return render_template('easy.html', data=json.dumps(data))
 
-    sudokus = []
-    answers = []
+@app.route('/generate_medium_sudoku')
+def generate_medium_sudoku():
+    sudoku, answer = generate_sudoku_task("medium")
+    data = {
+        'sudoku': sudoku,
+        'answer': answer
+    }
+    return render_template('easy.html', data=json.dumps(data))
 
-    for result in results:
-        sudoku, answer = result.result()
-        sudokus.append(sudoku)
-        answers.append(answer)
+@app.route('/generate_hard_sudoku')
+def generate_hard_sudoku():
+    sudoku, answer = generate_sudoku_task("hard")
+    data = {
+        'sudoku': sudoku,
+        'answer': answer
+    }
+    return render_template('easy.html', data=json.dumps(data))
 
-    return jsonify({'sudokus': sudokus, 'answers': answers})
 
 def generate_sudoku_task(difficulty):
     # 创建一个空的9x9数独网格
@@ -70,7 +83,7 @@ def generate_sudoku_task(difficulty):
     for _ in range(remove_count):
         row = random.randint(0, 8)
         col = random.randint(0, 8)
-        grid[row][col] = 0
+        grid[row][col] = ' '
 
     return grid, answer
 
@@ -134,20 +147,3 @@ def is_valid(grid, row, col, num):
 
 if __name__ == '__main__':
     app.run()
-
-# # 交互式接口
-# print("欢迎来到数独生成器！")
-# difficulty = input("请选择数独的难度（easy/medium/hard/expert）：")
-# count = int(input("请输入要生成的数独题目数量："))
-#
-# # 并行生成数独题目
-# with ThreadPoolExecutor() as executor:
-#     results = [executor.submit(generate_sudoku, difficulty) for _ in range(count)]
-#
-# # 打印生成的数独题目
-# for i, result in enumerate(results):
-#     sudoku = result.result()
-#     print(f"数独题目 {i + 1}:")
-#     for row in sudoku:
-#         print(' '.join(map(str, row)))
-#     print()

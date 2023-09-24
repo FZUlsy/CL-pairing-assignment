@@ -6,12 +6,12 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <div class="center">
-          <img src="../原型素材库/自我定位.png" alt="自我定位">
+          <img src="../static/自我定位.png" alt="自我定位">
     </div>
     <style>
         /* 设置背景 */
         body {
-              background-image: url("../原型素材库/背景.png");
+              background-image: url("../static/背景.png");
               background-attachment:fixed;
               background-size: 100% 100%;
         }
@@ -46,10 +46,10 @@
 <body>
     <ul>
 
-        <li><img src="../原型素材库/初级.png" onclick="location.href='easy.html'"></li>
-        <li><img src="../原型素材库/中级.png" onclick="location.href='medium.html'"></li>
-        <li><img src="../原型素材库/高级.png" onclick="location.href='hard.html'"></li>
-        <li><img src="../原型素材库/高级9.png" class="gaoji9" onclick="location.href='index.html'"></li>
+        <li><a href="/generate_easy_sudoku"><img src="../static/初级.png"></a></li>
+        <li><a href="/generate_medium_sudoku"></a><img src="../static/中级.png" onclick="location.href='/generate_medium_sudoku'"></a></li>
+        <li><a href="/generate_hard_sudoku"></a><img src="../static/高级.png" onclick="location.href='/generate_hard_sudoku'"></a></li>
+        <li><img src="../static/高级9.png" class="gaoji9" onclick="location.href='hard for nine.html'"></li>
 
     </ul>
 

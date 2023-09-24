@@ -5,34 +5,41 @@
     <title>easy</title>
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <div class="center">
-          <img src="../原型素材库/窗口.png" alt="easy">
-    </div>
-    <div class="laba">
-         <img src="../原型素材库/像素风_喇叭.png">
-    </div>
-    <div class="house">
-         <img src="../原型素材库/像素风_房子.png" onclick="location.href='Choosing.html'">
-    </div>
-    <div class="eye">
-         <img src="../原型素材库/像素风_可见.png">
-    </div>
-    <div class="x">
-         <img src="../原型素材库/x.png">
-    </div>
     <style>
-        /* 设置背景 */
-        body{
-              background-image: url("../原型素材库/背景.png");
-              background-attachment:fixed;
-               background-size: 100% 100%;
-        }
-        /* 设置按钮元素 */
-        .center img{
+        #sudokuContainer {
             margin: 0% 18%;
             width: 900px;
             height: 743px;
+            background-image: url("../static/窗口.png");
+            background-size: 100% 100%;
         }
+        #sudokuTable {
+        border-collapse: collapse; /* 合并边框 */
+        }
+
+        #sudokuTable td {
+        border: 1px solid black; /* 边框线样式 */
+        width: 30px; /* 格子宽度 */
+        height: 30px; /* 格子高度 */
+        text-align: center; /* 文字居中 */
+        }
+
+        #sudokuTable tr:nth-child(3n) td,
+        #sudokuTable tr:nth-child(3n+1) td {
+        border-bottom: 2px solid black; /* 每三行加粗底部边框线 */
+        }
+
+        #sudokuTable td:nth-child(3n) {
+        border-right: 2px solid black; /* 每三列加粗右侧边框线 */
+        }
+
+        /* 设置背景 */
+        body{
+            background-image: url("../static/背景.png");
+            background-attachment:fixed;
+            background-size: 100% 100%;
+        }
+        /* 设置按钮元素 */
         .laba img {
             cursor: pointer;
             position: absolute;
@@ -66,8 +73,73 @@
         }
 
     </style>
+
+    <script>
+        const data = JSON.parse('{{data|safe}}');
+        const sudoku = data['sudoku'];
+        const answer = data['answer'];
+        document.write(sudoku);
+        const sudokuTable = document.getElementById('sudokuTbody');
+        mark = false;
+        for (let i = 0; i < 9; i++) {
+            let row = document.createElement('tr');
+            for (let j = 0; j < 9; j++) {
+                let cell = document.createElement('td');
+                cell.innerText = sudoku[i][j];
+                row.appendChild(cell);
+            }
+            sudokuTable.appendChild(row);
+        }
+        document.write(sudokuTable);
+        function showanswer() {
+            // if (mark) {
+            //     sudokuTable.innerHTML = '';
+            //     for (let i = 0; i < 9; i++) {
+            //         let row = document.createElement('tr');
+            //         for (let j = 0; j < 9; j++) {
+            //             let cell = document.createElement('td');
+            //             cell.innerText = answer[i][j];
+            //             row.appendChild(cell);
+            //         }
+            //         sudokuTable.appendChild(row);
+            //     }
+            //     mark = false;
+            // } else {
+            //     for (let i = 0; i < 9; i++) {
+            //         let row = document.createElement('tr');
+            //         for (let j = 0; j < 9; j++) {
+            //             let cell = document.createElement('td');
+            //             cell.innerText = sudoku[i][j];
+            //             row.appendChild(cell);
+            //         }
+            //         sudokuTable.appendChild(row);
+            //     }
+            //     mark = true;
+            // }
+    }
+    </script>
 </head>
 <body>
-
+    <div class="center">
+        <!-- 数独题目容器 -->
+        <div id="sudokuContainer">
+          <table id="sudokuTable">
+            <tbody id="sudokuTbody">
+            </tbody>
+          </table>
+        </div>
+    </div>
+    <div class="laba">
+        <img src="../static/像素风_喇叭.png">
+    </div>
+    <div class="house">
+        <img src="../static/像素风_房子.png" onclick="location.href='Choosing.html'">
+    </div>
+    <div class="eye">
+        <img src="../static/像素风_可见.png" onclick="showanswer()">
+    </div>
+    <div class="x">
+        <img src="../static/x.png">
+    </div>
 </body>
 </html>
