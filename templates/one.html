@@ -15,17 +15,21 @@
         }
         #sudokuTable {
         border-collapse: collapse; /* 合并边框 */
+        position: relative; /* 相对定位 */
+        top: 17%;
+        left: 17%; 
         }
 
+
         #sudokuTable td {
+        margin: 20% 20%;
         border: 1px solid black; /* 边框线样式 */
-        width: 30px; /* 格子宽度 */
-        height: 30px; /* 格子高度 */
+        width: 60px; /* 格子宽度 */
+        height: 60px; /* 格子高度 */
         text-align: center; /* 文字居中 */
         }
 
-        #sudokuTable tr:nth-child(3n) td,
-        #sudokuTable tr:nth-child(3n+1) td {
+        #sudokuTable tr:nth-child(3n+1) td{
         border-bottom: 2px solid black; /* 每三行加粗底部边框线 */
         }
 
@@ -74,50 +78,7 @@
 
     </style>
 
-    <script>
-        const data = JSON.parse('{{data|safe}}');
-        const sudoku = data['sudoku'];
-        const answer = data['answer'];
-        document.write(sudoku);
-        const sudokuTable = document.getElementById('sudokuTbody');
-        mark = false;
-        for (let i = 0; i < 9; i++) {
-            let row = document.createElement('tr');
-            for (let j = 0; j < 9; j++) {
-                let cell = document.createElement('td');
-                cell.innerText = sudoku[i][j];
-                row.appendChild(cell);
-            }
-            sudokuTable.appendChild(row);
-        }
-        document.write(sudokuTable);
-        function showanswer() {
-            // if (mark) {
-            //     sudokuTable.innerHTML = '';
-            //     for (let i = 0; i < 9; i++) {
-            //         let row = document.createElement('tr');
-            //         for (let j = 0; j < 9; j++) {
-            //             let cell = document.createElement('td');
-            //             cell.innerText = answer[i][j];
-            //             row.appendChild(cell);
-            //         }
-            //         sudokuTable.appendChild(row);
-            //     }
-            //     mark = false;
-            // } else {
-            //     for (let i = 0; i < 9; i++) {
-            //         let row = document.createElement('tr');
-            //         for (let j = 0; j < 9; j++) {
-            //             let cell = document.createElement('td');
-            //             cell.innerText = sudoku[i][j];
-            //             row.appendChild(cell);
-            //         }
-            //         sudokuTable.appendChild(row);
-            //     }
-            //     mark = true;
-            // }
-    }
-    </script>
+    
 </head>
 <body>
     <div class="center">
@@ -133,7 +94,7 @@
         <img src="../static/像素风_喇叭.png">
     </div>
     <div class="house">
-        <img src="../static/像素风_房子.png" onclick="location.href='Choosing.html'">
+        <a href = "/choose"><img src="../static/像素风_房子.png"></a>
     </div>
     <div class="eye">
         <img src="../static/像素风_可见.png" onclick="showanswer()">
@@ -141,5 +102,51 @@
     <div class="x">
         <img src="../static/x.png">
     </div>
+
+
+    <script>
+        const data = JSON.parse('{{data|safe}}');
+        const sudoku = data['sudoku'];
+        const answer = data['answer'];
+        const sudokuTable = document.getElementById("sudokuTable");
+        mark = true;
+        for (let i = 0; i < 9; i++) {
+            let row = document.createElement('tr');
+            var cell;
+            for (let j = 0; j < 9; j++) {
+                cell = document.createElement('td');
+                cell.innerText = sudoku[i][j];
+                row.appendChild(cell);
+            }
+            sudokuTable.appendChild(row);
+        }
+        function showanswer() {
+            if (mark) {
+                sudokuTable.innerHTML = '';
+                for (let i = 0; i < 9; i++) {
+                    let row = document.createElement('tr');
+                    for (let j = 0; j < 9; j++) {
+                        let cell = document.createElement('td');
+                        cell.innerText = answer[i][j];
+                        row.appendChild(cell);
+                    }
+                    sudokuTable.appendChild(row);
+                }
+                mark = false;
+            } else {
+                sudokuTable.innerHTML = '';
+                for (let i = 0; i < 9; i++) {
+                    let row = document.createElement('tr');
+                    for (let j = 0; j < 9; j++) {
+                        let cell = document.createElement('td');
+                        cell.innerText = sudoku[i][j];
+                        row.appendChild(cell);
+                    }
+                    sudokuTable.appendChild(row);
+                }
+                mark = true;
+            }
+            }
+    </script>
 </body>
 </html>

@@ -27,7 +27,7 @@ def generate_easy_sudoku():
         'sudoku': sudoku,
         'answer': answer
     }
-    return render_template('easy.html', data=json.dumps(data))
+    return render_template('one.html', data=json.dumps(data))
 
 @app.route('/generate_medium_sudoku')
 def generate_medium_sudoku():
@@ -36,7 +36,7 @@ def generate_medium_sudoku():
         'sudoku': sudoku,
         'answer': answer
     }
-    return render_template('easy.html', data=json.dumps(data))
+    return render_template('one.html', data=json.dumps(data))
 
 @app.route('/generate_hard_sudoku')
 def generate_hard_sudoku():
@@ -45,7 +45,23 @@ def generate_hard_sudoku():
         'sudoku': sudoku,
         'answer': answer
     }
-    return render_template('easy.html', data=json.dumps(data))
+    return render_template('one.html', data=json.dumps(data))
+#并发生成九个hard难度的数独
+@app.route('/nine')
+def nine():
+    with ThreadPoolExecutor(max_workers=9) as executor:
+        results = [executor.submit(generate_sudoku_task,"hard") for i in range(9)]
+    sudokus, answers = [], []
+    for result in results:
+        sudoku, answer = result.result()
+        sudokus.append(sudoku)
+        answers.append(answer)
+    data = {
+        'sudokus': sudokus,
+        'answers': answers
+    }
+    return render_template('nine.html', data=json.dumps(data))
+
 
 
 def generate_sudoku_task(difficulty):
