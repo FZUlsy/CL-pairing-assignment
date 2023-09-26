@@ -50,22 +50,20 @@
             background-size: 100% 100%;
         }
         .hezi {
-            float: left;
-            width: 30%;
-            height: 33%;
-            padding-top: 5px;
-            padding-left: 30px;
-        }
-        table {
-            grid: fixed;
             border-collapse: collapse;
             background-image: url("../static/nine.png");
             background-repeat: no-repeat;
             background-size: 100% 100%;
-            width:  100%;
-            height: 100%;
+            float: left;
+            width: 20%;
+            height: 33%;
+            margin-left: 10%;
         }
-        th,td {
+        table {
+            width:  95%;
+            height: 95%;
+        }
+        td {
             width: 20px;
             height: 15px;
             text-align: center;
@@ -129,6 +127,7 @@
                 container.innerHTML = '';
                 for(let i = 0;i < 9;i++){
                     var answer = answers[i];
+                    var sudoku = sudokus[i];
                     var hezi = document.createElement("div");
                     var sudokuTable = document.createElement("table")
                     for (let k = 0; k < 9; k++) {
@@ -137,6 +136,9 @@
                         for (let j = 0; j < 9; j++) {
                             cell = document.createElement('td');
                             cell.innerText = answer[k][j];
+                            if(sudoku[k][j] == " "){
+                            cell.style.color = "red";
+                            }
                             row.appendChild(cell);
                         }
                         sudokuTable.appendChild(row);
