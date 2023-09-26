@@ -2,10 +2,14 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>easy</title>
+    <title>one</title>
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <style>
+        @font-face {    
+            font-family: 'IPix';    
+            src: url('/static/IPix.ttf') format('truetype');
+        }
         #sudokuContainer {
             margin: 0% 18%;
             width: 900px;
@@ -14,27 +18,36 @@
             background-size: 100% 100%;
         }
         #sudokuTable {
-        border-collapse: collapse; /* 合并边框 */
-        position: relative; /* 相对定位 */
-        top: 17%;
-        left: 17%; 
+            border-collapse: collapse; /* 合并边框 */
+            position: relative; /* 相对定位 */
+            top: 17%;
+            left: 17%; 
         }
 
 
         #sudokuTable td {
-        margin: 20% 20%;
-        border: 1px solid black; /* 边框线样式 */
-        width: 60px; /* 格子宽度 */
-        height: 60px; /* 格子高度 */
-        text-align: center; /* 文字居中 */
+            margin: 20% 20%;
+            border: 2px solid black; /* 边框线样式 */
+            width: 60px; /* 格子宽度 */
+            height: 60px; /* 格子高度 */
+            text-align: center; /* 文字居中 */
+            font-family: 'IPix', sans-serif;
+            font-size: 40px;
+        }
+
+        #sudokuTable tr:nth-child(2) td{
+            border-top: 5px solid black; 
+        }
+        #sudokuTable td:nth-child(1) {
+            border-left: 5px solid black;
         }
 
         #sudokuTable tr:nth-child(3n+1) td{
-        border-bottom: 2px solid black; /* 每三行加粗底部边框线 */
+            border-bottom: 5px solid black; /* 每三行加粗底部边框线 */
         }
 
         #sudokuTable td:nth-child(3n) {
-        border-right: 2px solid black; /* 每三列加粗右侧边框线 */
+            border-right: 5px solid black; /* 每三列加粗右侧边框线 */
         }
 
         /* 设置背景 */
@@ -64,16 +77,20 @@
             cursor: pointer;
             position: absolute;
             top: 6%;
-            left: 56%;
+            left: 54%;
             width:103px;
             height:97px;
         }
         .x img{
+            cursor: pointer;
             position: absolute;
             top: 6%;
             left: 68%;
             width:103px;
             height:97px;
+        }
+        audio {
+            display: none;
         }
 
     </style>
@@ -81,6 +98,11 @@
     
 </head>
 <body>
+    <audio autoplay="autoplay" controls="controls"loop="loop" preload="auto"
+        src="/static/bgm.mp3">
+        你的浏览器版本太低,不支持audio标签
+    </audio>
+
     <div class="center">
         <!-- 数独题目容器 -->
         <div id="sudokuContainer">
@@ -90,21 +112,33 @@
           </table>
         </div>
     </div>
-    <div class="laba">
-        <img src="../static/像素风_喇叭.png">
+    <div class="laba" title="关闭音乐" onclick="zanting()">
+        <img class="music" src="../static/像素风_喇叭.png">
     </div>
-    <div class="house">
+    <div class="house" title="回到首页">
         <a href = "/choose"><img src="../static/像素风_房子.png"></a>
     </div>
-    <div class="eye">
+    <div class="eye" title="显示答案">
         <img src="../static/像素风_可见.png" onclick="showanswer()">
     </div>
-    <div class="x">
-        <img src="../static/x.png">
+    <div class="x" title="刷新题目">
+        <img src="../static/像素风_火箭.png" onclick="javascript:location.reload();">
     </div>
 
 
     <script>
+        function zanting(){
+            var audio = document.getElementsByTagName("audio")[0];
+            if(audio.paused){
+                audio.play();
+                document.querySelector(".music").src="../static/像素风_喇叭.png";
+            }else{
+                audio.pause();
+                document.querySelector(".music").src="../static/像素风_喇叭_静音.png";
+            }
+        }
+
+
         const data = JSON.parse('{{data|safe}}');
         const sudoku = data['sudoku'];
         const answer = data['answer'];
@@ -116,40 +150,34 @@
             for (let j = 0; j < 9; j++) {
                 cell = document.createElement('td');
                 cell.innerText = sudoku[i][j];
+                if(sudoku[i][j] == " "){
+                            cell.style.color = "red";
+                    }
                 row.appendChild(cell);
             }
             sudokuTable.appendChild(row);
         }
         function showanswer() {
             if (mark) {
-                sudokuTable.innerHTML = '';
                 for (let i = 0; i < 9; i++) {
-                    let row = document.createElement('tr');
-                    for (let j = 0; j < 9; j++) {
-                        let cell = document.createElement('td');
-                        cell.innerText = answer[i][j];
+                    for (let j = 0; j < 9; j++){
                         if(sudoku[i][j] == " "){
-                            cell.style.color = "red";
+                            sudokuTable.rows[i].cells[j].innerText = answer[i][j];
                         }
-                        row.appendChild(cell);
                     }
-                    sudokuTable.appendChild(row);
                 }
                 mark = false;
             } else {
-                sudokuTable.innerHTML = '';
                 for (let i = 0; i < 9; i++) {
-                    let row = document.createElement('tr');
-                    for (let j = 0; j < 9; j++) {
-                        let cell = document.createElement('td');
-                        cell.innerText = sudoku[i][j];
-                        row.appendChild(cell);
+                    for (let j = 0; j < 9; j++){
+                        if(sudoku[i][j] == " "){
+                            sudokuTable.rows[i].cells[j].innerText = " ";
+                        }
                     }
-                    sudokuTable.appendChild(row);
                 }
                 mark = true;
             }
-            }
+        }
     </script>
 </body>
 </html>

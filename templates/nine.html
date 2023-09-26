@@ -6,7 +6,10 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <style>
-
+         @font-face {    
+            font-family: 'IPix';    
+            src: url('/static/IPix.ttf') format('truetype');
+        }
         /* 设置背景 */
         body{
               background-image: url("../static/背景.png");
@@ -17,7 +20,7 @@
         .laba img {
             cursor: pointer;
             position: absolute;
-            top: 12%;
+            top: 10%;
             left: 90%;
             width:103px;
             height:97px;
@@ -25,7 +28,7 @@
         .house img{
             cursor: pointer;
             position: absolute;
-            top: 42%;
+            top: 32%;
             left: 90%;
             width:101px;
             height:97px;
@@ -33,11 +36,21 @@
         .eye img{
             cursor: pointer;
             position: absolute;
-            top: 72%;
+            top: 54%;
             left: 90%;
             width:103px;
             height:97px;
         }
+        .x img{
+            cursor: pointer;
+            position: absolute;
+            top: 76%;
+            left: 90%;
+            width:103px;
+            height:97px;
+        }
+
+
         .center {
             width: 1440px;
             height: 1024px;
@@ -67,6 +80,7 @@
             width: 20px;
             height: 15px;
             text-align: center;
+            font-family: 'IPix', sans-serif;
             font-size: 10px;
             border: 1px solid black; /* 边框线样式 */
         }
@@ -77,27 +91,48 @@
         table td:nth-child(3n) {
         border-right: 2px solid black; /* 每三列加粗右侧边框线 */
         }
-
+        audio {
+            display: none;
+        }
     </style>
 </head>
 <body>
+    <audio autoplay="autoplay" controls="controls"loop="loop" preload="auto"
+        src="/static/bgm.mp3">
+        你的浏览器版本太低,不支持audio标签
+    </audio>
     <div class="center">
         <!-- 数独题目容器 -->
         <div id="sudokuContainer">
         </div>
     </div>
 
-    <div class="laba">
-        <img src="../static/像素风_喇叭.png">
+    <div class="laba" title="关闭音乐" onclick="zanting()">
+        <img class="music" src="../static/像素风_喇叭.png">
    </div>
-   <div class="house">
+   <div class="house" title="回到首页">
         <a href="/choose"><img src="../static/像素风_房子.png"></a>
    </div>
-   <div class="eye">
+   <div class="eye" title="显示答案">
         <img src="../static/像素风_可见.png" onclick="showanswer()">
+   </div>
+   <div class="x" title="刷新题目">
+        <img src="../static/像素风_火箭.png" onclick="javascript:location.reload();">
    </div>
 
    <script>
+        function zanting(){
+            var audio = document.getElementsByTagName("audio")[0];
+            if(audio.paused){
+                audio.play();
+                document.querySelector(".music").src="../static/像素风_喇叭.png";
+            }else{
+                audio.pause();
+                document.querySelector(".music").src="../static/像素风_喇叭_静音.png";
+            }
+        }
+
+
         const data = JSON.parse('{{data|safe}}');
         const sudokus = data['sudokus'];
         const answers = data['answers'];
@@ -113,6 +148,9 @@
                 for (let j = 0; j < 9; j++) {
                     cell = document.createElement('td');
                     cell.innerText = sudoku[k][j];
+                    if (sudoku[k][j] == " ") {
+                        cell.style.color = "red";
+                    }
                     row.appendChild(cell);
                 }
                 sudokuTable.appendChild(row);
@@ -122,53 +160,35 @@
             container.appendChild(hezi);
         }
         var mark = true;
+        var sudokuTables = document.getElementsByTagName("table");
         function showanswer() {
             if (mark) {
-                container.innerHTML = '';
-                for(let i = 0;i < 9;i++){
-                    var answer = answers[i];
-                    var sudoku = sudokus[i];
-                    var hezi = document.createElement("div");
-                    var sudokuTable = document.createElement("table")
-                    for (let k = 0; k < 9; k++) {
-                        let row = document.createElement('tr');
-                        var cell;
-                        for (let j = 0; j < 9; j++) {
-                            cell = document.createElement('td');
-                            cell.innerText = answer[k][j];
-                            if(sudoku[k][j] == " "){
-                            cell.style.color = "red";
-                            }
-                            row.appendChild(cell);
-                        }
-                        sudokuTable.appendChild(row);
-                    }
-                    hezi.appendChild(sudokuTable);
-                    hezi.setAttribute("class","hezi");
-                    container.appendChild(hezi);
-                }
-                mark = false;
-            }
-            else{
-                container.innerHTML = '';
                 for(let i = 0;i < 9;i ++)
                 {
                     var sudoku = sudokus[i];
-                    var hezi = document.createElement("div");
-                    var sudokuTable = document.createElement("table")
+                    var answer = answers[i];
+                    var sudokuTable = sudokuTables[i];
                     for (let k = 0; k < 9; k++) {
-                        let row = document.createElement('tr');
-                        var cell;
                         for (let j = 0; j < 9; j++) {
-                            cell = document.createElement('td');
-                            cell.innerText = sudoku[k][j];
-                            row.appendChild(cell);
+                            if(sudoku[k][j] == " "){
+                                sudokuTable.rows[k].cells[j].innerText = answer[k][j];
+                            }
                         }
-                        sudokuTable.appendChild(row);
                     }
-                    hezi.appendChild(sudokuTable);
-                    hezi.setAttribute("class","hezi");
-                    container.appendChild(hezi);
+                }
+                mark = false;
+            } else {
+                for(let i = 0;i < 9;i ++)
+                {
+                    var sudoku = sudokus[i];
+                    var sudokuTable = sudokuTables[i];
+                    for (let k = 0; k < 9; k++) {
+                        for (let j = 0; j < 9; j++) {
+                            if(sudoku[k][j] == " "){
+                                sudokuTable.rows[k].cells[j].innerText = " ";
+                            }
+                        }
+                    }
                 }
                 mark = true;
             }
