@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>one</title>
+    <link rel="shortcut icon" href="../static/像素_游戏机.png" >
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <style>
@@ -127,6 +128,7 @@
 
 
     <script>
+        // 暂停
         function zanting(){
             var audio = document.getElementsByTagName("audio")[0];
             if(audio.paused){
@@ -137,8 +139,7 @@
                 document.querySelector(".music").src="../static/像素风_喇叭_静音.png";
             }
         }
-
-
+        // 从后端获取数据
         const data = JSON.parse('{{data|safe}}');
         const sudoku = data['sudoku'];
         const answer = data['answer'];
@@ -150,6 +151,7 @@
             for (let j = 0; j < 9; j++) {
                 cell = document.createElement('td');
                 cell.innerText = sudoku[i][j];
+                //给空格添加红色字体样式
                 if(sudoku[i][j] == " "){
                             cell.style.color = "red";
                     }
@@ -157,6 +159,7 @@
             }
             sudokuTable.appendChild(row);
         }
+        //显示答案
         function showanswer() {
             if (mark) {
                 for (let i = 0; i < 9; i++) {

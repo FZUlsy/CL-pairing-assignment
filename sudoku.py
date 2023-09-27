@@ -16,14 +16,17 @@ history_answer = []
 app = Flask(__name__, template_folder='templates', static_folder='static')
 app.debug = True
 # Flask路由，渲染前端页面
+#进入界面
 @app.route('/')
 def home():
     return render_template('first.html')
 
+#难度选择界面
 @app.route('/choose')
 def choose():
     return render_template('choosing.html')
 
+#生成简单难度的数独
 @app.route('/generate_easy_sudoku')
 def generate_easy_sudoku():
     sudoku, answer = generate_sudoku_task("easy")
@@ -33,6 +36,7 @@ def generate_easy_sudoku():
     }
     return render_template('one.html', data=json.dumps(data))
 
+#生成中等难度的数独
 @app.route('/generate_medium_sudoku')
 def generate_medium_sudoku():
     sudoku, answer = generate_sudoku_task("medium")
@@ -42,6 +46,7 @@ def generate_medium_sudoku():
     }
     return render_template('one.html', data=json.dumps(data))
 
+#生成困难难度的数独
 @app.route('/generate_hard_sudoku')
 def generate_hard_sudoku():
     sudoku, answer = generate_sudoku_task("hard")
@@ -50,6 +55,7 @@ def generate_hard_sudoku():
         'answer': answer
     }
     return render_template('one.html', data=json.dumps(data))
+
 #并发生成九个hard难度的数独
 @app.route('/nine')
 def nine():
@@ -65,6 +71,8 @@ def nine():
         'answers': answers
     }
     return render_template('nine.html', data=json.dumps(data))
+
+#返回历史记录
 @app.route('/get_history')
 def get_history():
     data = {
@@ -74,7 +82,7 @@ def get_history():
     }
     return render_template('history.html', data=json.dumps(data))
 
-
+#生成数独的主函数
 def generate_sudoku_task(difficulty):
     # 创建一个空的9x9数独网格
     grid = [[0 for _ in range(9)] for _ in range(9)]
@@ -97,8 +105,6 @@ def generate_sudoku_task(difficulty):
         remove_count = random.randint(40, 50)
     elif difficulty == 'hard':
         remove_count = random.randint(50, 60)
-    elif difficulty == 'expert':
-        remove_count = random.randint(60, 70)
     else:
         remove_count = random.randint(30, 50)
 
@@ -112,6 +118,7 @@ def generate_sudoku_task(difficulty):
         col = random.randint(0, 8)
         grid[row][col] = ' '
 
+    #记录历史记录
     history.insert(0, grid)
     shijian.insert(0, str(time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())))
     history_answer.insert(0, answer)

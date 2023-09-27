@@ -3,9 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <title>hardest</title>
+    <link rel="shortcut icon" href="../static/像素_游戏机.png" >
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <style>
+        /* 添加本地字体 */
          @font-face {    
             font-family: 'IPix';    
             src: url('/static/IPix.ttf') format('truetype');
@@ -131,8 +133,7 @@
                 document.querySelector(".music").src="../static/像素风_喇叭_静音.png";
             }
         }
-
-
+        // 从后端获取数据
         const data = JSON.parse('{{data|safe}}');
         const sudokus = data['sudokus'];
         const answers = data['answers'];
