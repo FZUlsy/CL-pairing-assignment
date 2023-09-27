@@ -8,7 +8,11 @@ import random
 from flask import Flask, render_template, request, jsonify
 from concurrent.futures import ThreadPoolExecutor
 import json
+import time
 
+history = []
+shijian = []
+history_answer = []
 app = Flask(__name__, template_folder='templates', static_folder='static')
 app.debug = True
 # Flask路由，渲染前端页面
@@ -61,7 +65,14 @@ def nine():
         'answers': answers
     }
     return render_template('nine.html', data=json.dumps(data))
-
+@app.route('/get_history')
+def get_history():
+    data = {
+        'history': history,
+        'shijian': shijian,
+        'history_answer': history_answer
+    }
+    return render_template('history.html', data=json.dumps(data))
 
 
 def generate_sudoku_task(difficulty):
@@ -101,6 +112,9 @@ def generate_sudoku_task(difficulty):
         col = random.randint(0, 8)
         grid[row][col] = ' '
 
+    history.insert(0, grid)
+    shijian.insert(0, str(time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())))
+    history_answer.insert(0, answer)
     return grid, answer
 
 

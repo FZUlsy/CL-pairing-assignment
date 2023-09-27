@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en" style="width: 1440px; height: 1024px;">
+<head>
+    <meta charset="UTF-8">
+    <title>history</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+         @font-face {    
+            font-family: 'IPix';    
+            src: url('/static/IPix.ttf') format('truetype');
+        }
+        /* 设置背景 */
+        body{
+              background-image: url("../static/背景.png");
+              background-attachment:fixed;
+               background-size: 100% 100%;
+        }
+        /* 设置按钮元素 */
+        .laba img {
+            cursor: pointer;
+            position: fixed;
+            top: 10%;
+            left: 90%;
+            width:103px;
+            height:97px;
+        }
+        .house img{
+            cursor: pointer;
+            position: fixed;
+            top: 36%;
+            left: 90%;
+            width:101px;
+            height:97px;
+        }
+        .eye img{
+            cursor: pointer;
+            position: fixed;
+            top: 64%;
+            left: 90%;
+            width:103px;
+            height:97px;
+        }
+
+
+        .center {
+            width: 1440px;
+            height: 1024px;
+        }
+
+        #sudokuContainer {
+            margin: 0% 0%;
+            width: 95%;
+            height: 70%;
+            background-size: 100% 100%;
+        }
+        .hezi {
+            border-collapse: collapse;
+            background-image: url("../static/nine.png");
+            background-repeat: no-repeat;
+            background-size: 100% 100%;
+            float: left;
+            width: 20%;
+            height: 33%;
+            margin-left: 10%;
+            margin-top: 3%;
+        }
+        table {
+            width:  95%;
+            height: 95%;
+        }
+        td {
+            width: 20px;
+            height: 15px;
+            text-align: center;
+            font-family: 'IPix', sans-serif;
+            font-size: 10px;
+            border: 1px solid black; /* 边框线样式 */
+        }
+        table tr:nth-child(3n+1) td{
+            border-bottom: 2px solid black; /* 每三行加粗底部边框线 */
+        }
+
+        table td:nth-child(3n) {
+            border-right: 2px solid black; /* 每三列加粗右侧边框线 */
+        }
+        audio {
+            display: none;
+        }
+
+        caption {
+            font-family: 'IPix', sans-serif;
+            font-size: 20px;
+            caption-side: bottom;
+        }
+    </style>
+</head>
+<body>
+    <audio autoplay="autoplay" controls="controls"loop="loop" preload="auto"
+        src="/static/bgm.mp3">
+        你的浏览器版本太低,不支持audio标签
+    </audio>
+    <div class="center">
+        <!-- 数独题目容器 -->
+        <div id="sudokuContainer">
+        </div>
+    </div>
+
+    <div class="laba" title="关闭音乐" onclick="zanting()">
+        <img class="music" src="../static/像素风_喇叭.png">
+   </div>
+   <div class="house" title="回到首页">
+        <a href="/choose"><img src="../static/像素风_房子.png"></a>
+   </div>
+   <div class="eye" title="显示答案">
+        <img src="../static/像素风_可见.png" onclick="showanswer()">
+   </div>
+
+   <script>
+        function zanting(){
+            var audio = document.getElementsByTagName("audio")[0];
+            if(audio.paused){
+                audio.play();
+                document.querySelector(".music").src="../static/像素风_喇叭.png";
+            }else{
+                audio.pause();
+                document.querySelector(".music").src="../static/像素风_喇叭_静音.png";
+            }
+        }
+
+
+        const data = JSON.parse('{{data|safe}}');
+        const historys = data['history'];
+        const shijians = data['shijian'];
+        const history_answers = data['history_answer'];
+        const container = document.getElementById("sudokuContainer");
+        const count = historys.length;
+        for(let i = 0;i < count;i ++)
+        {
+            let hezi = document.createElement('div');
+            hezi.className = 'hezi';
+            let table = document.createElement('table');
+            let shijian = document.createElement('caption');
+            shijian.innerHTML = shijians[i];
+            let tbody = document.createElement('tbody');
+            for(let j = 0;j < 9;j ++)
+            {
+                let row = document.createElement('tr');
+                for(let k = 0;k < 9;k ++)
+                {
+                    let cell = document.createElement('td');
+                    cell.innerHTML = historys[i][j][k];
+                    if(historys[i][j][k] == " ")
+                    {
+                        cell.style.color = "red";
+                    }
+                    row.appendChild(cell);
+                }
+                tbody.appendChild(row);
+            }
+            table.appendChild(tbody);
+            table.appendChild(shijian);
+            hezi.appendChild(table);
+            container.appendChild(hezi);
+        }
+        var mark = true;
+        function showanswer()
+        {
+            if(mark)
+            {
+                for(let i = 0;i < count;i ++)
+                {
+                    let hezi = document.getElementsByClassName('hezi')[i];
+                    let table = hezi.getElementsByTagName('table')[0];
+                    let tbody = table.getElementsByTagName('tbody')[0];
+                    for(let j = 0;j < 9;j ++)
+                    {
+                        let row = tbody.getElementsByTagName('tr')[j];
+                        for(let k = 0;k < 9;k ++)
+                        {
+                            let cell = row.getElementsByTagName('td')[k];
+                            cell.innerHTML = history_answers[i][j][k];
+                        }
+                    }
+                }
+                mark = false;
+            }
+            else
+            {
+                for(let i = 0;i < count;i ++)
+                {
+                    let hezi = document.getElementsByClassName('hezi')[i];
+                    let table = hezi.getElementsByTagName('table')[0];
+                    let tbody = table.getElementsByTagName('tbody')[0];
+                    for(let j = 0;j < 9;j ++)
+                    {
+                        let row = tbody.getElementsByTagName('tr')[j];
+                        for(let k = 0;k < 9;k ++)
+                        {
+                            let cell = row.getElementsByTagName('td')[k];
+                            cell.innerHTML = historys[i][j][k];
+                        }
+                    }
+                }
+                mark = true;
+            }
+        }
+
+
+   </script>
+</body>
+</html>
