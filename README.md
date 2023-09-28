@@ -42,9 +42,11 @@ This is a software engineering pairing assignment by Liu and Chen
 
 - Python 3.6+
 - Flask 1.1+
+- 浏览器页面须为100%
 
 ## 其他文件说明
 **templates:** 存放HTML模板文件  
 **static:** 用于存储静态文件，本项目中存放网页所需的图像  
 **my_test.py:** 单元测试  
+
 >>>>>>> ae01cb0b0b026b6a956653d72d9612a332fa4b04
