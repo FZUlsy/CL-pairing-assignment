@@ -4,7 +4,7 @@
 
 这是一个使用Python Flask框架开发的数独Web应用。  
 1. 运行应用程序：python sudoku.py  
-2. 打开浏览器，访问 http://localhost:5000 来打开应用程序。  
+2. 打开浏览器，访问  http://localhost:5000  来打开应用程序。  
 3. 按照屏幕上的指示生成和解答数独谜题。  
 
 
